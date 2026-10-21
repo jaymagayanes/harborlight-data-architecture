@@ -21,3 +21,15 @@ code{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-size:.9em}
 .stats{display:flex;flex-wrap:wrap;gap:2rem;margin:1.5rem 0}.stats div{border-left:3px solid var(--blue);padding-left:.75rem}.stats strong{display:block;font-size:1.5rem}.stats span{color:var(--mute);font-size:.9rem}
 .note{border:1px dashed var(--line);padding:.75rem 1rem;color:var(--mute);font-size:.9rem;margin-top:3rem}
 @media(max-width:800px){body{grid-template-columns:1fr}nav{position:static;height:auto;border:0;border-bottom:1px solid var(--line);padding:1rem}nav a{display:inline-block;border:0;border-bottom:3px solid transparent}nav a[aria-current]{border-color:var(--blue)}nav small{margin-bottom:.5rem}}
+.fig.dark{background:#0f2430;border-color:#0f2430;padding:1.25rem}
+.fig.dark .box{fill:#173544;stroke:#2f5566}.fig.dark .t{fill:#e8f1f5}.fig.dark .s{fill:#9fb8c4}.fig.dark .hl{stroke:#7ea4ff}.fig.dark .ar{stroke:#8fb3c4}
+.flow{stroke-dasharray:6 5;animation:fl 1.2s linear infinite}@keyframes fl{to{stroke-dashoffset:-11}}
+@media(prefers-reduced-motion:reduce){.flow{animation:none}}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:1rem 0}
+.grid div{background:var(--card);padding:.9rem 1rem}.grid b{display:block}.grid span{color:var(--mute);font-size:.9rem}
+ol.j{list-style:none;counter-reset:j;padding:0;margin:1rem 0;border-left:2px solid var(--line)}
+ol.j li{counter-increment:j;position:relative;padding:.4rem 0 .9rem 2.4rem}
+ol.j li::before{content:counter(j);position:absolute;left:-.95rem;top:.35rem;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--blue);color:#fff;text-align:center;font-size:.85rem;line-height:1.7rem}
+.go{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0}
+.go a{display:block;padding:1rem;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--blue);color:var(--ink);text-decoration:none}
+.go a:hover{background:var(--code)}.go span{display:block;color:var(--mute);font-size:.9rem;margin-top:.25rem}
