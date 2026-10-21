@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ingestion | Harborlight Data Platform</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono&display=swap"><link rel="stylesheet" href="style.css"></head><body><nav><b>Harborlight Media</b><small>Data platform reference design</small><a href="index.html">Overview</a><a href="ingestion.html" aria-current=page>Ingestion</a><a href="model.html">Data model</a><a href="quality.html">Quality and monitoring</a><a href="ai-workflow.html">AI-assisted workflow</a></nav><main><h1>Ingestion</h1><p class="lead">Four kinds of source, each loaded in the way that suits it.</p><div class="wrap"><table><tr><th>Source</th><th>Method</th><th>Frequency</th><th>Main risk</th><th>Safeguard</th></tr><tr><td>Ad platform API</td><td>Python, paginated REST calls</td><td>Hourly</td><td>Rate limits, late-arriving data</td><td>Backoff and retry, 3-day restatement window</td></tr><tr><td>Subscription database (SQL Server)</td><td>Change data capture, incremental</td><td>Every 15 minutes</td><td>Missed or duplicate changes</td><td>High-water mark, row-count reconciliation</td></tr><tr><td>Player events</td><td>Kafka consumers, micro-batches to S3</td><td>Continuous</td><td>Bursts, bad payloads</td><td>Dead-letter topic, schema validation</td></tr><tr><td>Partner files</td><td>S3 drop, file manifest</td><td>Daily</td><td>Wrong columns, partial files</td><td>Header check, checksum, quarantine folder</td></tr></table></div><h2>Rules every job follows</h2><ul><li><b>Idempotent.</b> Running a job twice gives the same result as running it once.</li><li><b>Incremental by default.</b> Full reloads are for backfills only.</li><li><b>Fail loudly.</b> A job that cannot finish cleanly raises an alert and does not write partial data.</li></ul><h2>Example: rate-limit-safe API pull</h2><pre>def fetch_all(session, url, params, max_tries=5):
+    page, rows = 1, []
+    while True:
+        for attempt in range(max_tries):
+            r = session.get(url, params={**params, "page": page}, timeout=30)
+            if r.status_code == 429:
+                time.sleep(2 ** attempt)   # back off, then retry
+                continue
+            r.raise_for_status()
+            break
+        else:
+            raise RuntimeError(f"gave up on page {page}")
+        data = r.json()["data"]
+        if not data:
+            return rows
+        rows += data
+        page += 1</pre><p class="note">Harborlight Media is a fictional company. All figures are illustrative design targets, not measurements from a real system.</p></main></body></html>

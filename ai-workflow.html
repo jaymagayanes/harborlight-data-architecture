@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI-assisted workflow | Harborlight Data Platform</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono&display=swap"><link rel="stylesheet" href="style.css"></head><body><nav><b>Harborlight Media</b><small>Data platform reference design</small><a href="index.html">Overview</a><a href="ingestion.html">Ingestion</a><a href="model.html">Data model</a><a href="quality.html">Quality and monitoring</a><a href="ai-workflow.html" aria-current=page>AI-assisted workflow</a></nav><main><h1>AI-assisted workflow</h1><p class="lead">AI tools speed up drafting SQL, Python and documentation. The engineer still owns whether the result is right.</p><h2>Validation checklist for AI-generated SQL and code</h2><ol><li>Read every line and explain it in plain words before running it.</li><li>Run on a small sample in a non-production copy.</li><li>Compare row counts and totals with the source or the old query.</li><li>Find differing rows with <code>EXCEPT</code> in both directions.</li><li>Test edge cases: NULLs, duplicate keys, empty days, time zones.</li><li>Compare the execution plan, not only the runtime.</li><li>Record what was checked in the change notes, then deploy.</li></ol><h2>Example: proving a rewrite is correct, not just plausible</h2><p>An AI-suggested rewrite of a slow daily revenue query must return the same rows as the original.</p><pre>-- rows in the original but missing from the rewrite
+SELECT * FROM (original_query) o
+EXCEPT
+SELECT * FROM (rewritten_query) r;
+
+-- rows in the rewrite but not in the original
+SELECT * FROM (rewritten_query) r
+EXCEPT
+SELECT * FROM (original_query) o;
+
+-- both must return zero rows; then compare totals
+SELECT SUM(revenue), COUNT(*) FROM (rewritten_query) r;</pre><h2>What stays with the engineer</h2><ul><li>Business definitions, such as what counts as an active subscriber.</li><li>Anything that writes to production data.</li><li>Sign-off on results that other teams will rely on.</li></ul><p class="note">Harborlight Media is a fictional company. All figures are illustrative design targets, not measurements from a real system.</p></main></body></html>
